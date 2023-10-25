@@ -5,18 +5,27 @@ const User = require('./../models/user');
 
 
 
-const usersGet = (req = request, res = response) => {
+const usersGet = async (req = request, res = response) => {
 
-    const { q, nombre = 'No name', apikey, page = 1, limit } = req.query;
+    let { limit = 5, offset = 0} = req.query;
+    const query = { estado: true };
 
-    res.json({
-        msg: 'get API - controlador',
-        q,
-        nombre,
-        apikey,
-        page, 
-        limit
-    });
+    if(isNaN(limit)) 
+        limit = 5;
+    
+    if(isNaN(offset))
+        offset = 0;
+
+
+    const [total, usuarios] = await Promise.all([
+        User.countDocuments(query),
+        User.find(query)
+                    .limit(limit)
+                    .skip(offset)
+    ]);
+
+
+    res.json({usuarios, total});
 }
 
 const usersPost = async (req, res = response) => {
