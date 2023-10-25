@@ -2,7 +2,7 @@
 const { Router } = require('express');
 const { check }  = require('express-validator');
 
-const { validateRol, validateUser } = require('./../helpers/db-validators');
+const { validateRol, validateEmail, validateUserById } = require('./../helpers/db-validators');
 
 const { usersGet,
         usersPut,
@@ -16,7 +16,11 @@ const router = Router();
 
 router.get('/', usersGet );
 
-router.put('/:id', usersPut );
+router.put('/:id', [
+    check('id', 'No es un ID valido').isMongoId(),
+    check('id').custom( validateUserById ),
+    validateUserFields
+] ,usersPut );
 
 router.post('/', [
     check('email', 'Email invalido').isEmail(),
@@ -24,7 +28,7 @@ router.post('/', [
     check('password', 'El password debe tener al menos 8 caracteres').isLength({ min: 8 }),
     // check('rol', 'Rol incorrecto').isIn(['ADMIN_ROLE', 'USER_ROLE']),
     check('rol').custom( validateRol ),
-    check('email').custom( validateUser ),
+    check('email').custom( validateEmail ),
     validateUserFields
 ], usersPost);
 
