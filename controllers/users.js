@@ -42,8 +42,8 @@ const usersPost = async (req, res = response) => {
 
 
     res.json({
-        msg: 'post API - usersPost', 
-        user
+        msg: 'ok',
+        data: user
     });
 }
 
@@ -63,8 +63,8 @@ const usersPut = async (req, res = response) => {
 
 
     res.json({
-        msg: 'put API - usersPut',
-        userUpdated
+        msg: 'ok',
+        data: userUpdated
     });
 }
 
@@ -74,9 +74,18 @@ const usersPatch = (req, res = response) => {
     });
 }
 
-const usersDelete = (req, res = response) => {
+const usersDelete = async (req, res = response) => {
+    const { id } = req.params;
+    const query = { _id: id, estado: true};
+
+    const user = await User.findOne(query);
+    user.estado = false;
+
+    await user.save();
+
     res.json({
-        msg: 'delete API - usersDelete'
+        msg: 'ok',
+        data: user
     });
 }
 

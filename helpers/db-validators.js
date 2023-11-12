@@ -28,8 +28,18 @@ const validateUserById =  async (id = '') => {
 }
 
 
+const validateUserDelete = async (id) => {
+    const query = {_id: id, estado: false}
+    const existUser = await User.findOne(query);
+
+    if(existUser) {
+        throw new Error(`Este usuario ya ha sido eliminado`);
+    }
+}
+
 module.exports = {
     validateRol,
     validateEmail,
-    validateUserById
+    validateUserById,
+    validateUserDelete
 }

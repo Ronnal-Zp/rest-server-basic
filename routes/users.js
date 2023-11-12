@@ -2,7 +2,10 @@
 const { Router } = require('express');
 const { check }  = require('express-validator');
 
-const { validateRol, validateEmail, validateUserById } = require('./../helpers/db-validators');
+const { validateRol, 
+        validateEmail, 
+        validateUserById, 
+        validateUserDelete } = require('./../helpers/db-validators');
 
 const { usersGet,
         usersPut,
@@ -20,7 +23,7 @@ router.put('/:id', [
     check('id', 'No es un ID valido').isMongoId(),
     check('id').custom( validateUserById ),
     validateUserFields
-] ,usersPut );
+], usersPut );
 
 router.post('/', [
     check('email', 'Email invalido').isEmail(),
@@ -32,7 +35,12 @@ router.post('/', [
     validateUserFields
 ], usersPost);
 
-router.delete('/', usersDelete );
+router.delete('/:id', [
+    check('id', 'No es un ID valido').isMongoId(),
+    check('id').custom( validateUserById ),
+    check('id').custom( validateUserDelete ),
+    validateUserFields
+], usersDelete);
 
 router.patch('/', usersPatch );
 
