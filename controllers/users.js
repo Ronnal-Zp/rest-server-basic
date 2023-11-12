@@ -28,6 +28,17 @@ const usersGet = async (req = request, res = response) => {
     res.json({usuarios, total});
 }
 
+const userGetById = async (req = request, res = response) => {
+    const { id } = req.params;
+    
+    const user = await User.findById(id);
+
+    res.json({
+        msg: 'ok',
+        data: user
+    })
+}
+
 const usersPost = async (req, res = response) => {
 
     const { name, password, email, rol } = req.body;
@@ -50,16 +61,16 @@ const usersPost = async (req, res = response) => {
 const usersPut = async (req, res = response) => {
 
     const { id } = req.params;
-    const { _id, google, password, email, ...user } = req.body;
+    const { _id, google, password, email, ...data } = req.body;
 
 
     if(password) {
         const salt = bcryptjs.genSaltSync();
-        user.password = bcryptjs.hashSync(password, salt);
+        data.password = bcryptjs.hashSync(password, salt);
     }
 
 
-    const userUpdated = await User.findByIdAndUpdate(id, user);
+    const userUpdated = await User.findByIdAndUpdate(id, data);
 
 
     res.json({
@@ -68,11 +79,6 @@ const usersPut = async (req, res = response) => {
     });
 }
 
-const usersPatch = (req, res = response) => {
-    res.json({
-        msg: 'patch API - usersPatch'
-    });
-}
 
 const usersDelete = async (req, res = response) => {
     const { id } = req.params;
@@ -94,8 +100,8 @@ const usersDelete = async (req, res = response) => {
 
 module.exports = {
     usersGet,
+    userGetById,
     usersPost,
     usersPut,
-    usersPatch,
     usersDelete,
 }
