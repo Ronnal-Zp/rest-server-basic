@@ -18,7 +18,7 @@ const isValidAdminRole = (req = request, res = response, next) => {
         });
     }
     
-    next()
+    next();
 }
 
 
@@ -33,13 +33,15 @@ const isValidRols = ( ...rols ) => {
 
         const { rol, name } = req.user;
 
-        if( !rols.includes(rol)) {
+        console.log(rol, 'rol usuario token');
+        console.log(rols, 'roles');
+        if( !rols.includes(rol) ) {
             return res.status(401).json({
                 msg: `Rol ${rol} no tiene permisos para esta accion.`
             });
         }
 
-        next()
+        next();
     }
 }
 
