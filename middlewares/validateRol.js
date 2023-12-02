@@ -33,8 +33,6 @@ const isValidRols = ( ...rols ) => {
 
         const { rol, name } = req.user;
 
-        console.log(rol, 'rol usuario token');
-        console.log(rols, 'roles');
         if( !rols.includes(rol) ) {
             return res.status(401).json({
                 msg: `Rol ${rol} no tiene permisos para esta accion.`

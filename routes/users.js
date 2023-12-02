@@ -47,7 +47,7 @@ router.post('/', [
 
 router.delete('/:id', [
     validateJWT,
-    isValidRols(['ADMIN_ROLE', 'SELLER_ROLE']),
+    isValidRols('ADMIN_ROLE', 'SELLER_ROLE'),
     check('id', 'No es un ID valido').isMongoId(),
     check('id').custom( validateUserById ),
     check('id').custom( validateUserDelete ),
