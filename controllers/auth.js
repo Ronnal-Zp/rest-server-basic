@@ -3,6 +3,7 @@ const bcryptjs = require('bcryptjs');
 
 const User = require('./../models/user');
 const generateJWT = require('./../helpers/generate-jwt');
+const googleVerifyToken = require('../helpers/google-verify-token');
 
 
 const login = async (req = request, res = response) => {
@@ -37,7 +38,7 @@ const login = async (req = request, res = response) => {
         const token = await generateJWT( user.id );
 
         res.json({
-            msg: 'ok',
+            msg: 'OK',
             data: user,
             token
         });
@@ -53,6 +54,59 @@ const login = async (req = request, res = response) => {
 }
 
 
+const googleSignIn = async (req = request, res = response) => {
+    const { idToken } = req.body;
+
+    try {
+        const { email, name, picture: img } = await googleVerifyToken(idToken);
+
+        let user = await User.findOne({ email });
+
+        
+        if( !user ) {
+            
+            const data = {
+                name,
+                email,
+                estado: true,
+                google: true,
+                rol: 'USER_ROLE',
+                password: '',
+                img
+            }
+
+            user = new User( data );
+            await user.save();
+        }
+
+
+        if( user.estado == false ) {
+            res.status(401).json({
+                msg: 'El usuario se encuentra inactivo.'
+            });
+        }
+
+
+        const token = await generateJWT( user.id );
+
+        res.json({
+            msg: 'OK',
+            data: user,
+            token
+        });
+
+    } catch (error) {
+        
+        res.status(401).json({
+            msg: 'El token es invalido o ha caducado.'
+        });
+
+    }
+
+}
+
+
 module.exports = {
-    login
+    login,
+    googleSignIn
 }

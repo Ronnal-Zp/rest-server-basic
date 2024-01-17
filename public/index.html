@@ -3,11 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso denegado</title>
+    <title>Iniciar sesion con google</title>
 </head>
 <body>
 
-    <h1>Acceso Denegado</h1>
-    
+    <h1>Iniciar con Google</h1>
+    <hr>
+
+
+    <div id="g_id_onload"
+        data-client_id="870929355525-e1ua9euhtmr2urlkt0pl1jp70j7a0a37.apps.googleusercontent.com"
+        data-context="signin"
+        data-ux_mode="popup"
+        data-callback="handleCredentialResponse"
+        data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin"
+        data-type="standard"
+        data-shape="rectangular"
+        data-theme="outline"
+        data-text="signin_with"
+        data-size="large"
+        data-logo_alignment="left">
+    </div>
+
+
+    <button style="margin-top:12px; padding:8px; background-color:#3f61ff; color:#ffffff; border:none; border-radius:4px;" type="button" id="google_signout">Signout</button>
+
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script>
+
+        function handleCredentialResponse(response) {
+            const data = { idToken: response.credential };
+
+            fetch('http://localhost:8080/api/auth/google-sign-in', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(response => {
+                localStorage.setItem('email', response?.data?.email);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        }
+
+
+
+        const btn_google_signout = document.querySelector('#google_signout');
+        
+        btn_google_signout.addEventListener('click', () => {
+             google.accounts.id.revoke(localStorage.getItem('email') ?? '', done => {
+                localStorage.clear();
+                location.reload();
+            });
+        });
+
+
+    </script>
 </body>
 </html>
