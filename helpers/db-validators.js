@@ -1,5 +1,6 @@
-const Role = require('./../models/role');
-const User = require('./../models/user');
+const Category = require('../models/category');
+const Role     = require('../models/role');
+const User     = require('../models/user');
 
 const validateRol = async (rol ='') => {
     const existsRole = await Role.findOne({ rol });
@@ -37,9 +38,22 @@ const validateUserDelete = async (id) => {
     }
 }
 
+
+const validateCategoryById = async (id = '') => {
+    const query = { _id: id, estado: true };
+    const existsCategory = await Category.find(query);
+
+    if( !existsCategory ) {
+        throw new Error(`Categoria con ID ${id} no existe`);
+    }
+}
+
+
+
 module.exports = {
     validateRol,
     validateEmail,
     validateUserById,
-    validateUserDelete
+    validateUserDelete,
+    validateCategoryById
 }

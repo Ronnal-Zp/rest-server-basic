@@ -4,12 +4,12 @@ const { check }  = require('express-validator');
 
 const { validateUserFields,
         isValidRols,
-        validateJWT } = require('./../middlewares');
+        validateJWT } = require('../middlewares');
 
 const { validateRol, 
         validateEmail, 
         validateUserById, 
-        validateUserDelete } = require('./../helpers/db-validators');
+        validateUserDelete } = require('../helpers/db-validators');
 
 const { usersGet,
         userGetById,
