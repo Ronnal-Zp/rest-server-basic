@@ -67,12 +67,11 @@ const categoriesPost = async (req = request, res = response) => {
 
 const categoriesPut = async (req = request, res = response) => {
 
-    const id = req.params.id;
-    const name = req.body.name.toUpperCase();
-    const estado = req.body.estado; 
-
-    const data = { name }
-    if(estado != undefined && typeof estado == 'boolean') data.estado = estado;
+    const { id } = req.params;
+    const { estado, user, ...data  } = req.body;
+    
+    data.name = data.name.toUpperCase();
+    data.user = req.user._id;
 
     const category = await Category.findOneAndUpdate({ _id: id }, data, { new: true});
     

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check }  = require('express-validator');
-const { validateUserFields, validateJWT } = require('../middlewares');
+const { validateUserFields, validateJWT, isValidAdminRole } = require('../middlewares');
 const { validateCategoryById } = require('../helpers/db-validators');
 
 const { 
@@ -35,6 +35,7 @@ router.post('/', [
 
 router.put('/:id', [
     validateJWT,
+    isValidAdminRole,
     check('id', 'No es un ID válido.').isMongoId(),
     check('name', 'El nombre de la categoria es requerido.').not().isEmpty(),
     check('id').custom( validateCategoryById ),
@@ -44,6 +45,7 @@ router.put('/:id', [
 
 router.delete('/:id', [
     validateJWT,
+    isValidAdminRole,
     check('id', 'No es un ID válido.').isMongoId(),
     check('id').custom( validateCategoryById ),
     validateUserFields
